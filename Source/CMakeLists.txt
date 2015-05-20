@@ -320,6 +320,8 @@ set(SRCS
   cmPropertyMap.h
   cmQtAutoGenerators.cxx
   cmQtAutoGenerators.h
+  cmRegexTools.h
+  cmRegexTools.cxx
   cmRST.cxx
   cmRST.h
   cmScriptGenerator.h

@@ -1,0 +1,3 @@
+add_RunCMake_test(graphviz_no_filter)
+add_RunCMake_test(graphviz_filter_even)
+add_RunCMake_test(graphviz_filter_uneven)
