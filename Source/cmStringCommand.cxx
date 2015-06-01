@@ -405,7 +405,10 @@ bool cmStringCommand::RegexReplace(std::vector<std::string> const& args)
 
   this->Makefile->ClearMatches();
   // Call the implementation that was factored out
-  const std::string output = ::RegexReplace(input, regex, replace);
+  RegexReplacer replacer(regex, replace);
+  RegexReplacerCallback<cmCommand> callback(this, &cmCommand::SetError);
+  replacer.SetErrorReportingCallBack(&callback);
+  const std::string output = replacer(input);
 
   // Store the output in the provided variable.
   this->Makefile->AddDefinition(outvar, output.c_str());

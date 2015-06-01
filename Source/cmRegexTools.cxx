@@ -30,49 +30,69 @@ namespace
   };
 }
 //----------------------------------------------------------------------------
-std::string RegexReplace(std::string const& input, std::string const& regex, std::string const& replace)
+//----------------------------------------------------------------------------
+RegexReplacer::RegexReplacer(std::string const& regex, std::string const& replace)
+    : Regex(regex)
+    , Replace(replace)
+    , ErrorCallback(NULL)
+{
+
+}
+//----------------------------------------------------------------------------
+void RegexReplacer::SetErrorReportingCallBack(BaseCallBack* cb)
+{
+    ErrorCallback = cb;
+}
+//----------------------------------------------------------------------------
+void RegexReplacer::SetError(std::string const& err) const
+{
+    if(ErrorCallback != NULL)
+        (*ErrorCallback)(err);
+}
+//----------------------------------------------------------------------------
+std::string RegexReplacer::operator()(std::string const& input) const
 {
   // Pull apart the replace expression to find the escaped [0-9] values.
   std::vector<RegexReplacement> replacement;
   std::string::size_type l = 0;
-  while(l < replace.length())
+  while(l < this->Replace.length())
     {
-    std::string::size_type r = replace.find("\\", l);
+    std::string::size_type r = this->Replace.find("\\", l);
     if(r == std::string::npos)
       {
-      r = replace.length();
-      replacement.push_back(replace.substr(l, r-l));
+      r = this->Replace.length();
+      replacement.push_back(this->Replace.substr(l, r-l));
       }
     else
       {
       if(r-l > 0)
         {
-        replacement.push_back(replace.substr(l, r-l));
+        replacement.push_back(this->Replace.substr(l, r-l));
         }
-      if(r == (replace.length()-1))
+      if(r == (this->Replace.length()-1))
         {
-//        this->SetError("sub-command REGEX, mode REPLACE: "
-//                       "replace-expression ends in a backslash.");
+        this->SetError("sub-command REGEX, mode REPLACE: "
+                       "replace-expression ends in a backslash.");
         return input;
         }
-      if((replace[r+1] >= '0') && (replace[r+1] <= '9'))
+      if((this->Replace[r+1] >= '0') && (this->Replace[r+1] <= '9'))
         {
-        replacement.push_back(replace[r+1]-'0');
+        replacement.push_back(this->Replace[r+1]-'0');
         }
-      else if(replace[r+1] == 'n')
+      else if(this->Replace[r+1] == 'n')
         {
         replacement.push_back("\n");
         }
-      else if(replace[r+1] == '\\')
+      else if(this->Replace[r+1] == '\\')
         {
         replacement.push_back("\\");
         }
       else
         {
         std::string e = "sub-command REGEX, mode REPLACE: Unknown escape \"";
-        e += replace.substr(r, 2);
+        e += this->Replace.substr(r, 2);
         e += "\" in replace-expression.";
-//        this->SetError(e);
+        this->SetError(e);
         return input;
         }
       r += 2;
@@ -82,12 +102,12 @@ std::string RegexReplace(std::string const& input, std::string const& regex, std
 
   // Compile the regular expression.
   cmsys::RegularExpression re;
-  if(!re.compile(regex.c_str()))
+  if(!re.compile(this->Regex.c_str()))
     {
     std::string e =
       "sub-command REGEX, mode REPLACE failed to compile regex \""+
-      regex+"\".";
-//    this->SetError(e);
+      this->Regex+"\".";
+    this->SetError(e);
     return input;
     }
 
@@ -107,8 +127,8 @@ std::string RegexReplace(std::string const& input, std::string const& regex, std
     if(r-l2 == 0)
       {
       std::string e = "sub-command REGEX, mode REPLACE regex \""+
-        regex+"\" matched an empty string.";
-//      this->SetError(e);
+        this->Regex+"\" matched an empty string.";
+      this->SetError(e);
       return input;
       }
 
@@ -136,9 +156,9 @@ std::string RegexReplace(std::string const& input, std::string const& regex, std
           {
           std::string e =
             "sub-command REGEX, mode REPLACE: replace expression \""+
-            replace+"\" contains an out-of-range escape for regex \""+
-            regex+"\".";
-//          this->SetError(e);
+            this->Replace+"\" contains an out-of-range escape for regex \""+
+            this->Regex+"\".";
+          this->SetError(e);
           return input;
           }
         }

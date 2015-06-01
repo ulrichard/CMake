@@ -14,7 +14,48 @@
 
 #include <string>
 
-std::string RegexReplace(std::string const& input, std::string const& regex, std::string const& replace);
+class BaseCallBack
+{
+public:
+  virtual void operator()(const std::string&) = 0;
+  virtual ~BaseCallBack() {}
+};
+
+template<class ClassT>
+class RegexReplacerCallback : public BaseCallBack
+{
+public:
+  typedef void(ClassT::* FuncT)(const std::string&);
+
+  RegexReplacerCallback(ClassT* c, FuncT fn)
+    : _fn(fn), _c(c) {}
+
+  void operator()(const std::string& err)
+  {
+    return (_c->*_fn)(err);
+  }
+
+private:
+  FuncT _fn;
+  ClassT* _c;
+};
+
+class RegexReplacer
+{
+public:
+    RegexReplacer(std::string const& regex, std::string const& replace);
+
+    void SetErrorReportingCallBack(BaseCallBack* cb);
+
+    std::string operator()(std::string const& input) const;
+
+private:
+    void SetError(std::string const& err) const;
+
+    std::string     Regex;
+    std::string     Replace;
+    BaseCallBack*   ErrorCallback;
+};
 
 
 #endif

@@ -619,7 +619,10 @@ std::string cmGraphVizWriter::MangleNodeName(std::string name) const
   for(std::vector<RegularReplace>::const_iterator it = this->GraphNodeNameFilters.begin();
       it != this->GraphNodeNameFilters.end();
       ++it)
-    name = RegexReplace(name, it->first, it->second); 
+    {
+        RegexReplacer replacer(it->first, it->second);
+        name = replacer(name);
+    }
 
   return name;
 }
