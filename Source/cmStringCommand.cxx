@@ -408,6 +408,8 @@ bool cmStringCommand::RegexReplace(std::vector<std::string> const& args)
   RegexReplacer replacer(regex, replace);
   RegexReplacerCallback<cmCommand> callback(this, &cmCommand::SetError);
   replacer.SetErrorReportingCallBack(&callback);
+  replacer.SetMakefile(this->Makefile);
+
   const std::string output = replacer(input);
 
   // Store the output in the provided variable.

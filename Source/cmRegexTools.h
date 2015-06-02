@@ -14,6 +14,8 @@
 
 #include <string>
 
+class cmMakefile;
+
 class BaseCallBack
 {
 public:
@@ -46,6 +48,7 @@ public:
     RegexReplacer(std::string const& regex, std::string const& replace);
 
     void SetErrorReportingCallBack(BaseCallBack* cb);
+    void SetMakefile(cmMakefile* mf);
 
     std::string operator()(std::string const& input) const;
 
@@ -55,6 +58,7 @@ private:
     std::string     Regex;
     std::string     Replace;
     BaseCallBack*   ErrorCallback;
+    cmMakefile*     Makefile;
 };
 
 

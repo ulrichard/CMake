@@ -158,21 +158,26 @@ void cmGraphVizWriter::ReadSettings(const char* settingsFileName,
     std::vector<std::string> nodeNameFilterRegExVector;
     cmSystemTools::ExpandListArgument(nodeNameFilterRegexes,
                                       nodeNameFilterRegExVector);
-    for(std::vector<std::string>::const_iterator
-        itvIt = nodeNameFilterRegExVector.begin();
-        itvIt != nodeNameFilterRegExVector.end();
-        ++ itvIt )
+    if(nodeNameFilterRegExVector.size() % 2 != 0)
       {
-      const std::string currentRegexString(*itvIt);
-      const std::string currentReplaceString(*++itvIt);
-      this->GraphNodeNameFilters.push_back(
-            std::make_pair(currentRegexString, currentReplaceString));
+      std::cerr << "GRAPHVIZ_NODE_FILTER should contain pairs of regex and replace expressions"
+                << std::endl;
+      }
+    else
+      {
+      for(std::vector<std::string>::const_iterator
+          itvIt = nodeNameFilterRegExVector.begin();
+          itvIt != nodeNameFilterRegExVector.end();
+          ++ itvIt )
+        {
+        const std::string currentRegexString(*itvIt++);
+        const std::string currentReplaceString(*itvIt);
 
-      if(itvIt == nodeNameFilterRegExVector.end())
-         break;
+        this->GraphNodeNameFilters.push_back(
+              std::make_pair(currentRegexString, currentReplaceString));
+        }
       }
     }
-
 }
 
 

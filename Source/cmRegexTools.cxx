@@ -10,6 +10,7 @@
   See the License for more information.
 ============================================================================*/
 #include "cmRegexTools.h"
+#include "cmMakefile.h"
 
 #include <cmsys/RegularExpression.hxx>
 
@@ -42,6 +43,11 @@ RegexReplacer::RegexReplacer(std::string const& regex, std::string const& replac
 void RegexReplacer::SetErrorReportingCallBack(BaseCallBack* cb)
 {
     ErrorCallback = cb;
+}
+//----------------------------------------------------------------------------
+void RegexReplacer::SetMakefile(cmMakefile* mf)
+{
+    Makefile = mf;
 }
 //----------------------------------------------------------------------------
 void RegexReplacer::SetError(std::string const& err) const
@@ -116,7 +122,8 @@ std::string RegexReplacer::operator()(std::string const& input) const
   std::string::size_type base = 0;
   while(re.find(input.c_str()+base))
     {
-//    this->Makefile->StoreMatches(re);
+    if(this->Makefile != NULL)
+        this->Makefile->StoreMatches(re);
     std::string::size_type l2 = re.start();
     std::string::size_type r = re.end();
 
