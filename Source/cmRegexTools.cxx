@@ -36,6 +36,7 @@ RegexReplacer::RegexReplacer(std::string const& regex, std::string const& replac
     : Regex(regex)
     , Replace(replace)
     , ErrorCallback(NULL)
+    , Makefile(NULL)
 {
 
 }
