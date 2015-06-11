@@ -1,3 +1,2 @@
-cmake_minimum_required(VERSION 3.0)
-project(${RunCMake_TEST} NONE)
-include(${RunCMake_TEST}.cmake)
+add_RunCMake_test(filter_even)
+add_RunCMake_test(filter_uneven)
