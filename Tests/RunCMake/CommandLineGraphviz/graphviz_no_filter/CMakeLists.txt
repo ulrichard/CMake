@@ -1,3 +1,3 @@
 cmake_minimum_required(VERSION 3.0)
-project(${RunCMake_TEST} NONE)
-#include(../libs.cmake)
+project(graphviz_no_filter)
+include(../libs.cmake)

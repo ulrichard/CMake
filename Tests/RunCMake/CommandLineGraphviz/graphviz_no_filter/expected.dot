@@ -1,0 +1,15 @@
+digraph GG {
+node [
+  fontsize = "12"
+];
+    "node5" [ label="myappExt" shape="house"];
+    "node6" [ label="ext_libA" shape="ellipse"];
+    "node5" -> "node6" // myappExt -> ext_libA
+    "node7" [ label="ext_libB" shape="ellipse"];
+    "node5" -> "node7" // myappExt -> ext_libB
+    "node0" [ label="myappInt" shape="house"];
+    "node3" [ label="vendor_lib1" shape="diamond"];
+    "node0" -> "node3" // myappInt -> vendor_lib1
+    "node4" [ label="vendor_lib2" shape="diamond"];
+    "node0" -> "node4" // myappInt -> vendor_lib2
+}
